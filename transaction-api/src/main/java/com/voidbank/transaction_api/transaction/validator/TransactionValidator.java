@@ -1,7 +1,7 @@
-package com.voidbank.transaction_api.validator;
+package com.voidbank.transaction_api.transaction.validator;
 
-import com.voidbank.transaction_api.model.Transaction;
-import com.voidbank.transaction_api.service.AccountService;
+import com.voidbank.transaction_api.transaction.model.Transaction;
+import com.voidbank.transaction_api.transaction.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

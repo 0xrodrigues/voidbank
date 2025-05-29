@@ -1,6 +1,6 @@
-package com.voidbank.transaction_api.repository;
+package com.voidbank.transaction_api.transaction.repository;
 
-import com.voidbank.transaction_api.model.Transaction;
+import com.voidbank.transaction_api.transaction.model.Transaction;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

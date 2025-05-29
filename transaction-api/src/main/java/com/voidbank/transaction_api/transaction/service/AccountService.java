@@ -1,6 +1,6 @@
-package com.voidbank.transaction_api.service;
+package com.voidbank.transaction_api.transaction.service;
 
-import com.voidbank.transaction_api.repository.AccountRepository;
+import com.voidbank.transaction_api.transaction.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
