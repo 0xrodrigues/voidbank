@@ -2,34 +2,49 @@ package com.voidbank.transaction_api.transaction.repository;
 
 import com.voidbank.transaction_api.transaction.model.Account;
 import com.voidbank.transaction_api.transaction.model.DocumentType;
+import com.voidbank.transaction_api.transaction.model.TransactionEvent;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
-@Slf4j
 @RequiredArgsConstructor
 public class AccountRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     private static final String QUERY_EXISTS = """
-        SELECT COUNT(*) FROM accounts WHERE nu_account = :nu_account
-    """;
+                SELECT COUNT(*) FROM accounts WHERE nu_account = :nu_account
+            """;
 
     private static final String QUERY_BALANCE = """
-        SELECT balance FROM accounts WHERE nu_account = :nu_account
-    """;
+                SELECT balance FROM accounts WHERE nu_account = :nu_account
+            """;
 
     private static final String QUERY_ACCOUNT = """
-        SELECT * FROM accounts WHERE nu_account = :nu_account
-    """;
+                SELECT * FROM accounts WHERE nu_account = :nu_account
+            """;
+
+    private static final String UPDATE_DEBIT_BALANCE = """
+                UPDATE accounts
+                SET balance = balance - :totalDebit,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE nu_account = :from
+            """;
+
+    private static final String UPDATE_CREDIT_BALANCE = """
+                UPDATE accounts
+                SET balance = balance + :amount,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE nu_account = :to
+            """;
 
     public boolean accountExists(String nuAccount) {
         MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
@@ -47,6 +62,21 @@ public class AccountRepository {
         return jdbcTemplate.query(QUERY_ACCOUNT, params, accountRowMapper())
                 .stream()
                 .findFirst();
+    }
+
+    public void updateBalances(TransactionEvent event) {
+        BigDecimal amount = event.getAmount();
+        BigDecimal rate = event.getRate() != null ? event.getRate() : BigDecimal.ZERO;
+        BigDecimal totalDebit = amount.add(rate);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("from", Long.valueOf(event.getFrom()));
+        params.put("to", Long.valueOf(event.getTo()));
+        params.put("amount", amount);
+        params.put("totalDebit", totalDebit);
+
+        jdbcTemplate.update(UPDATE_DEBIT_BALANCE, params);
+        jdbcTemplate.update(UPDATE_CREDIT_BALANCE, params);
     }
 
     private RowMapper<Account> accountRowMapper() {
