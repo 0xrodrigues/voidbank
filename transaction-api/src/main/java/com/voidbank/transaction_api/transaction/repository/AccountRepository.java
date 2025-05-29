@@ -34,7 +34,7 @@ public class AccountRepository {
 
     private static final String UPDATE_DEBIT_BALANCE = """
                 UPDATE accounts
-                SET balance = balance - :totalDebit,
+                SET balance = balance - :amount,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE nu_account = :from
             """;
@@ -65,15 +65,10 @@ public class AccountRepository {
     }
 
     public void updateBalances(TransactionEvent event) {
-        BigDecimal amount = event.getAmount();
-        BigDecimal rate = event.getRate() != null ? event.getRate() : BigDecimal.ZERO;
-        BigDecimal totalDebit = amount.add(rate);
-
         Map<String, Object> params = new HashMap<>();
         params.put("from", Long.valueOf(event.getFrom()));
         params.put("to", Long.valueOf(event.getTo()));
-        params.put("amount", amount);
-        params.put("totalDebit", totalDebit);
+        params.put("amount", event.getAmount());
 
         jdbcTemplate.update(UPDATE_DEBIT_BALANCE, params);
         jdbcTemplate.update(UPDATE_CREDIT_BALANCE, params);
