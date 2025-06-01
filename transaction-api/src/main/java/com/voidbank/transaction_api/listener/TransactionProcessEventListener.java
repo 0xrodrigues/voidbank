@@ -2,7 +2,9 @@ package com.voidbank.transaction_api.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.voidbank.transaction_api.transaction.model.TransactionEvent;
+import com.voidbank.transaction_api.transaction.model.TransactionStatus;
 import com.voidbank.transaction_api.transaction.repository.AccountRepository;
+import com.voidbank.transaction_api.transaction.repository.TransactionRepository;
 import com.voidbank.transaction_api.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ public class TransactionProcessEventListener {
     private static final String TRANSACTION_PROCESS_TOPIC = "voidbank.transaction.process.event";
 
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
     @KafkaListener(topics = TRANSACTION_PROCESS_TOPIC)
     public void transactionListener(String event) {
@@ -25,14 +28,12 @@ public class TransactionProcessEventListener {
         try {
             TransactionEvent transactionEvent = ObjectMapperUtil.getMapper().readValue(event, TransactionEvent.class);
             accountRepository.updateBalances(transactionEvent);
+            transactionRepository.updateStatus(transactionEvent.getToken(), TransactionStatus.PROCESSED);
 
             log.info("Balances updated successfully for transaction - {}", transactionEvent.getToken());
         } catch (JsonProcessingException ex) {
             log.error("Error converting JSON event {}", event, ex);
         }
-
     }
-
-
 
 }

@@ -1,6 +1,7 @@
 package com.voidbank.transaction_api.transaction.repository;
 
 import com.voidbank.transaction_api.transaction.model.Transaction;
+import com.voidbank.transaction_api.transaction.model.TransactionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -40,6 +41,11 @@ public class TransactionRepository {
                 )
             """;
 
+    private static final String UPDATE_TRANSACTION_STATUS = """
+                UPDATE transactions SET status = :status, updated_at = CURRENT_TIMESTAMP
+                WHERE token = :token
+            """;
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public void insert(Transaction transaction) {
@@ -50,6 +56,18 @@ public class TransactionRepository {
         } catch (Exception e) {
             log.error("Failed to insert transaction: {}", transaction, e);
             throw e;
+        }
+    }
+
+    public void updateStatus(String token, TransactionStatus status) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("status", status.name());
+        params.put("token", token);
+        try {
+            jdbcTemplate.update(UPDATE_TRANSACTION_STATUS, params);
+            log.info("Transaction status updated successfully - token {} - status {}", token, status.name());
+        } catch (Exception ex) {
+            log.error("Failed to update transaction status - token {} - status {}", token, status.name(), ex);
         }
     }
 

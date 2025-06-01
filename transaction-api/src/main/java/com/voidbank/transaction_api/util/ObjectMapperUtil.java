@@ -1,5 +1,7 @@
 package com.voidbank.transaction_api.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -13,5 +15,9 @@ public class ObjectMapperUtil {
         return mapper;
     }
 
+    public static JsonNode getJsonNode(String json) throws JsonProcessingException {
+        ObjectMapper mapper = getMapper();
+        return mapper.readTree(json);
+    }
 
 }
