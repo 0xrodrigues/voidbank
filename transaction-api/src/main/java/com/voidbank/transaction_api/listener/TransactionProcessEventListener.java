@@ -1,7 +1,6 @@
 package com.voidbank.transaction_api.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voidbank.transaction_api.transaction.model.TransactionEvent;
 import com.voidbank.transaction_api.transaction.repository.AccountRepository;
 import com.voidbank.transaction_api.util.ObjectMapperUtil;
