@@ -1,22 +1,47 @@
 package com.voidbank.transaction_api.transaction.validator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.voidbank.transaction_api.publisher.KafkaPublisher;
 import com.voidbank.transaction_api.transaction.model.Transaction;
+import com.voidbank.transaction_api.transaction.model.TransactionFailedValidationEvent;
 import com.voidbank.transaction_api.transaction.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionValidator {
 
     private final AccountService accountService;
+    private final KafkaPublisher kafkaPublisher;
+    private final ObjectMapper objectMapper;
+
+    private static final String TRANSACTION_FAILED_VALIDATION_TOPIC = "voidbank.transaction.failed.validation.event";
 
     public void validate(Transaction transaction) {
-        validateAmount(transaction);
-        validateAccounts(transaction);
-        validateSufficientBalance(transaction);
+        try {
+            validateAmount(transaction);
+            validateAccounts(transaction);
+            validateSufficientBalance(transaction);
+        } catch (Exception ex) {
+            log.error("Transaction failed validation - {}", transaction);
+
+            try {
+                String exMessage = ex.getMessage();
+                String eventAsString = objectMapper.writeValueAsString(
+                        new TransactionFailedValidationEvent(transaction.getFrom(), transaction.getTo(), exMessage));
+                kafkaPublisher.send(TRANSACTION_FAILED_VALIDATION_TOPIC, eventAsString);
+            } catch (JsonProcessingException jsonProcessingException) {
+                log.error("Error when producer event to {} topic", TRANSACTION_FAILED_VALIDATION_TOPIC, ex);
+            }
+
+            throw ex;
+        }
     }
 
     private void validateAmount(Transaction transaction) {
