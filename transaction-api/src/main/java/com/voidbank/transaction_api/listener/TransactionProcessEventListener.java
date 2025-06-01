@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voidbank.transaction_api.transaction.model.TransactionEvent;
 import com.voidbank.transaction_api.transaction.repository.AccountRepository;
+import com.voidbank.transaction_api.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,7 +24,7 @@ public class TransactionProcessEventListener {
         log.info("Event received from topic: {} - event: {}", TRANSACTION_PROCESS_TOPIC, event);
 
         try {
-            TransactionEvent transactionEvent = new ObjectMapper().readValue(event, TransactionEvent.class);
+            TransactionEvent transactionEvent = ObjectMapperUtil.getMapper().readValue(event, TransactionEvent.class);
             accountRepository.updateBalances(transactionEvent);
 
             log.info("Balances updated successfully for transaction - {}", transactionEvent.getToken());
@@ -32,4 +33,7 @@ public class TransactionProcessEventListener {
         }
 
     }
+
+
+
 }
