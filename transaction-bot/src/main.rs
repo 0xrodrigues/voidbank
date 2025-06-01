@@ -33,7 +33,7 @@ async fn main() {
         },
         _ => {
             println!("Commands:");
-            println!("transactions <tempo_em_ms>   - Executa transferências por esse tempo");
+            println!("transactions <tempo_em_ms>   - Executa transferências pelo tempo informado");
         }
     }
 }
