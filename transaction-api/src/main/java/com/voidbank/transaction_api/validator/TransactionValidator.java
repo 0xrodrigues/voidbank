@@ -1,11 +1,11 @@
-package com.voidbank.transaction_api.transaction.validator;
+package com.voidbank.transaction_api.validator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voidbank.transaction_api.publisher.KafkaPublisher;
-import com.voidbank.transaction_api.transaction.model.Transaction;
-import com.voidbank.transaction_api.transaction.model.TransactionFailedValidationEvent;
-import com.voidbank.transaction_api.transaction.service.AccountService;
+import com.voidbank.transaction_api.model.Transaction;
+import com.voidbank.transaction_api.model.TransactionFailedValidationEvent;
+import com.voidbank.transaction_api.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

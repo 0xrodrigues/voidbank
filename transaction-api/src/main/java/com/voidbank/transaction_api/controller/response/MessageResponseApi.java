@@ -1,4 +1,4 @@
-package com.voidbank.transaction_api.transaction.controller.response;
+package com.voidbank.transaction_api.controller.response;
 
 import lombok.*;
 

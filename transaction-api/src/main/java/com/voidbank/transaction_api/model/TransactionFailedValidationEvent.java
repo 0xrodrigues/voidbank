@@ -1,4 +1,4 @@
-package com.voidbank.transaction_api.transaction.model;
+package com.voidbank.transaction_api.model;
 
 import lombok.*;
 

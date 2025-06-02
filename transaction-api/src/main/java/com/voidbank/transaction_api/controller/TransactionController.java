@@ -1,9 +1,9 @@
-package com.voidbank.transaction_api.transaction.controller;
+package com.voidbank.transaction_api.controller;
 
-import com.voidbank.transaction_api.transaction.controller.request.CreateTransactionRequest;
-import com.voidbank.transaction_api.transaction.controller.response.MessageResponseApi;
-import com.voidbank.transaction_api.transaction.model.Transaction;
-import com.voidbank.transaction_api.transaction.service.TransactionService;
+import com.voidbank.transaction_api.controller.request.CreateTransactionRequest;
+import com.voidbank.transaction_api.controller.response.MessageResponseApi;
+import com.voidbank.transaction_api.model.Transaction;
+import com.voidbank.transaction_api.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,12 @@
-package com.voidbank.transaction_api.transaction.service;
+package com.voidbank.transaction_api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voidbank.transaction_api.publisher.KafkaPublisher;
-import com.voidbank.transaction_api.transaction.model.Transaction;
-import com.voidbank.transaction_api.transaction.model.TransactionEvent;
-import com.voidbank.transaction_api.transaction.model.TransactionStatus;
-import com.voidbank.transaction_api.transaction.repository.TransactionRepository;
-import com.voidbank.transaction_api.transaction.validator.TransactionValidator;
+import com.voidbank.transaction_api.model.Transaction;
+import com.voidbank.transaction_api.model.TransactionEvent;
+import com.voidbank.transaction_api.model.TransactionStatus;
+import com.voidbank.transaction_api.repository.TransactionRepository;
+import com.voidbank.transaction_api.validator.TransactionValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

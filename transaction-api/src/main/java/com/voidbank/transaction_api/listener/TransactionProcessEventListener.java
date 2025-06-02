@@ -1,10 +1,10 @@
 package com.voidbank.transaction_api.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.voidbank.transaction_api.transaction.model.TransactionEvent;
-import com.voidbank.transaction_api.transaction.model.TransactionStatus;
-import com.voidbank.transaction_api.transaction.repository.AccountRepository;
-import com.voidbank.transaction_api.transaction.repository.TransactionRepository;
+import com.voidbank.transaction_api.model.TransactionEvent;
+import com.voidbank.transaction_api.model.TransactionStatus;
+import com.voidbank.transaction_api.repository.AccountRepository;
+import com.voidbank.transaction_api.repository.TransactionRepository;
 import com.voidbank.transaction_api.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
