@@ -13,3 +13,5 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 sqlx = { version = "0.8", features = [ "mysql", "runtime-tokio", "bigdecimal" ] }
 bigdecimal = { version = "0.4", features = ["serde"] }
 rand = "0.8"
+log = "0.4.27"
+simple_logger = "5.0.0"

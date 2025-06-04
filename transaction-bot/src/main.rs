@@ -13,9 +13,19 @@ use crate::account::account::{get_accounts, Account};
 use std::env;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
+use simple_logger::SimpleLogger;
+use log::{info, warn};
+use log::LevelFilter;
 
 #[tokio::main]
 async fn main() {
+    SimpleLogger::new()
+        .env()
+        .with_level(LevelFilter::Warn)
+        .with_level(LevelFilter::Info)
+        .init()
+        .unwrap();
+
     let args: Vec<String> = env::args().collect();
     let command = args.get(1).map(|s| s.as_str()).unwrap_or("help");
 
@@ -25,15 +35,15 @@ async fn main() {
 
             let accounts = get_accounts().await;
             if accounts.len() < 2 {
-                println!("❌ Não há contas suficientes para fazer a transferência.");
+                warn!("❌ Não há contas suficientes para fazer a transferência.");
                 return;
             }
 
             run_transactions(accounts, duration_ms).await;
         },
         _ => {
-            println!("Commands:");
-            println!("transactions <tempo_em_ms>   - Executa transferências pelo tempo informado");
+            info!("Commands:");
+            info!("transactions <tempo_em_ms>   - Executa transferências pelo tempo informado");
         }
     }
 }
@@ -58,7 +68,7 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
 
         let req = create_request(from_account.nu_account.clone(), to_account.nu_account.clone(), amount);
 
-        println!(
+        info!(
             "Enviando R$ {} de {} para {} (forçando erro: {})",
             req.amount, req.from, req.to, invalid
         );
@@ -66,10 +76,10 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
         create_transaction(req).await;
 
         // Pequeno intervalo para não bater a API a cada milissegundo
-        sleep(Duration::from_millis(500)).await;
+        sleep(Duration::from_millis(250)).await;
     }
 
-    println!("✅ Bot finalizado após {} ms", duration_ms);
+    info!("✅ Bot finalizado após {} ms", duration_ms);
 }
 
 fn create_request(from_account: String, to_account: String, amount: Decimal) -> CreateTransactionRequest {

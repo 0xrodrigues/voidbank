@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 use crate::request::create_transaction_request::CreateTransactionRequest;
+use log::{info, warn};
 
 pub async fn create_transaction(request: CreateTransactionRequest) {
+    info!("Creating a request to transaction-api {:?}", request);
+
     let client = reqwest::Client::new();
 
     let mut map = HashMap::new();
@@ -19,15 +22,15 @@ pub async fn create_transaction(request: CreateTransactionRequest) {
     match call_result {
         Ok(response) => {
             if response.status().is_success() {
-                println!("✅ Transação realizada com sucesso.");
+                info!("✅ Transação realizada com sucesso.");
             } else {
                 let status = response.status();
-                let body = response.text().await.unwrap_or_else(|_| "Erro ao ler body".to_string());
-                println!("⚠️ Erro da API (status {}): {}", status, body);
+                warn!("⚠️ Error on API (status {})", status);
             }
         }
         Err(err) => {
-            println!("❌ Erro ao enviar requisição: {:?}", err);
+            warn!("❌ Erro ao enviar requisição: {:?}", err);
+            // TODO: Jogar em um topico de exceção - create.transaction.failed.event
         }
     }
 }
