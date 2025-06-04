@@ -1,8 +1,11 @@
 use crate::client::kafka_producer::send_to_kafka;
 use crate::request::create_transaction_request::CreateTransactionRequest;
 use log::{info, warn};
+use reqwest::Error;
 use serde_json::json;
 use std::collections::HashMap;
+
+const KAFKA_TOPIC: &str = "create.transaction.failed.event";
 
 pub async fn create_transaction(request: CreateTransactionRequest) {
     info!("Creating a request to transaction-api {:?}", request);
@@ -32,17 +35,20 @@ pub async fn create_transaction(request: CreateTransactionRequest) {
         }
         Err(err) => {
             warn!("❌ Erro ao enviar requisição: {:?}", err);
-            // Envia evento para o Kafka
-            let payload = json!({
-                "error": format!("{:?}", err),
-                "request": &request
-            })
-            .to_string();
-            if let Err(e) = send_to_kafka("create.transaction.failed.event", &payload).await {
+            let payload = get_payload(request, err);
+            if let Err(e) = send_to_kafka(KAFKA_TOPIC, &payload).await {
                 warn!("❌ Falha ao enviar evento para o Kafka: {:?}", e);
             } else {
                 info!("✅ Evento de falha enviado para o Kafka com sucesso.");
             }
         }
     }
+}
+
+fn get_payload(request: CreateTransactionRequest, err: Error) -> String {
+    json!({
+        "error": format!("{:?}", err),
+        "request": &request
+    })
+    .to_string()
 }
