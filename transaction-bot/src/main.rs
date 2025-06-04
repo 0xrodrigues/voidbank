@@ -1,21 +1,21 @@
-mod request;
-mod client;
 mod account;
+mod client;
+mod request;
 
+use crate::account::account::{Account, get_accounts};
+use crate::client::create_transaction::create_transaction;
+use crate::request::create_transaction_request::CreateTransactionRequest;
 use bigdecimal::BigDecimal;
-use rand::rngs::ThreadRng;
+use log::LevelFilter;
+use log::{info, warn};
 use rand::Rng;
+use rand::rngs::ThreadRng;
 use rust_decimal::Decimal;
 use rust_decimal::prelude::ToPrimitive;
-use crate::request::create_transaction_request::CreateTransactionRequest;
-use crate::client::create_transaction::create_transaction;
-use crate::account::account::{get_accounts, Account};
+use simple_logger::SimpleLogger;
 use std::env;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
-use simple_logger::SimpleLogger;
-use log::{info, warn};
-use log::LevelFilter;
 
 #[tokio::main]
 async fn main() {
@@ -31,7 +31,10 @@ async fn main() {
 
     match command {
         "transactions" => {
-            let duration_ms = args.get(2).and_then(|s| s.parse::<u64>().ok()).unwrap_or(10000);
+            let duration_ms = args
+                .get(2)
+                .and_then(|s| s.parse::<u64>().ok())
+                .unwrap_or(10000);
 
             let accounts = get_accounts().await;
             if accounts.len() < 2 {
@@ -40,7 +43,7 @@ async fn main() {
             }
 
             run_transactions(accounts, duration_ms).await;
-        },
+        }
         _ => {
             info!("Commands:");
             info!("transactions <tempo_em_ms>   - Executa transferências pelo tempo informado");
@@ -66,7 +69,11 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
         let invalid = rng.gen_bool(0.2);
         let amount = generate_random_values(from_account.balance.clone(), &mut rng, invalid);
 
-        let req = create_request(from_account.nu_account.clone(), to_account.nu_account.clone(), amount);
+        let req = create_request(
+            from_account.nu_account.clone(),
+            to_account.nu_account.clone(),
+            amount,
+        );
 
         info!(
             "Enviando R$ {} de {} para {} (forçando erro: {})",
@@ -82,7 +89,11 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
     info!("✅ Bot finalizado após {} ms", duration_ms);
 }
 
-fn create_request(from_account: String, to_account: String, amount: Decimal) -> CreateTransactionRequest {
+fn create_request(
+    from_account: String,
+    to_account: String,
+    amount: Decimal,
+) -> CreateTransactionRequest {
     CreateTransactionRequest {
         from: from_account,
         to: to_account,

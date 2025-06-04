@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 use crate::request::create_transaction_request::CreateTransactionRequest;
 use log::{info, warn};
+use std::collections::HashMap;
 
 pub async fn create_transaction(request: CreateTransactionRequest) {
     info!("Creating a request to transaction-api {:?}", request);

@@ -1,16 +1,14 @@
-use sqlx::{mysql, Connection};
-use sqlx::mysql::{MySqlConnection};
 use bigdecimal::BigDecimal;
-
+use sqlx::mysql::MySqlConnection;
+use sqlx::{Connection, mysql};
 
 #[derive(sqlx::FromRow)]
 pub struct Account {
     pub nu_account: String,
-    pub balance: BigDecimal
+    pub balance: BigDecimal,
 }
 
 async fn connect() -> MySqlConnection {
-
     let opt = mysql::MySqlConnectOptions::new()
         .host("localhost")
         .port(3306)
@@ -23,5 +21,8 @@ async fn connect() -> MySqlConnection {
 
 pub async fn get_accounts() -> Vec<Account> {
     let mut conn = connect().await;
-    return sqlx::query_as("select * from accounts").fetch_all(&mut conn).await.unwrap();
+    return sqlx::query_as("select * from accounts")
+        .fetch_all(&mut conn)
+        .await
+        .unwrap();
 }
