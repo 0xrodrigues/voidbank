@@ -12,14 +12,11 @@ Use **VOIDBANK**, a fintech prototype written in Java that simulates a modern ba
 VOIDBANK is a sandbox banking system designed for educational purposes.  
 Its goal is to support developers studying and applying knowledge in:
 
-- Distributed Systems
-- Event-Driven Architecture
 - Java & Spring Boot
-- Kafka (asynchronous messaging)
+- Asynchronous event and concurrency tasks
 - Dockerized environments
 - Relational databases (MySQL)
 - Observability with Dynatrace
-- Microservices communication patterns
 
 This project offers a robust foundation for experiments, extensions, and learning.
 
@@ -34,20 +31,6 @@ This project offers a robust foundation for experiments, extensions, and learnin
 - **Docker & Docker Compose**
 - **Dynatrace** (monitoring and observability)
 - **Maven** (build management)
-
----
-
-## 🧩 Architecture
-
-VOIDBANK follows a **modular and distributed design**:
-
-- `account-service`: Manages bank accounts
-- `transaction-service`: Handles money transfers
-- `kafka-producer/consumer`: Event communication between services
-- `mysql-db`: Stores account and transaction data
-- `dynatrace-agent`: Monitors application health and performance
-
-Each module runs in its own container using Docker Compose, simulating a real-world distributed environment.
 
 ---
 
@@ -75,15 +58,6 @@ docker-compose -f docker-compose.mysql.yml up -d
 
 ---
 
-## 🧪 Use Cases Simulated
-
-- 📥 Account creation and balance updates  
-- 💸 Money transfer between accounts  
-- 🔄 Kafka-based asynchronous event handling  
-- 📊 Transaction traceability through monitoring
-
----
-
 ## 🤝 Contribution
 
 VOIDBANK is open for contributions!
@@ -102,7 +76,6 @@ You're welcome to open issues, fork the repo, and send pull requests.
 
 This project is especially useful for:
 
-- Practicing microservices communication with Kafka
 - Containerizing services using Docker
 - Experimenting with observability tools (like Dynatrace)
 - Applying clean architecture principles in Java
