@@ -14,7 +14,7 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public boolean accountExists(String nuAccount) {
+    public boolean accountExists(Long nuAccount) {
         try {
             boolean exists = accountRepository.accountExists(nuAccount);
             log.debug("Account existence check for {}: {}", nuAccount, exists);
@@ -25,7 +25,7 @@ public class AccountService {
         }
     }
 
-    public BigDecimal getBalance(String nuAccount) {
+    public BigDecimal getBalance(Long nuAccount) {
         try {
             BigDecimal balance = accountRepository.getBalance(nuAccount);
             log.debug("Retrieved balance for account {}: {}", nuAccount, balance);

@@ -51,8 +51,8 @@ public class TransactionValidator {
     }
 
     private void validateAccounts(Transaction transaction) {
-        String from = transaction.getFrom();
-        String to = transaction.getTo();
+        Long from = transaction.getFrom();
+        Long to = transaction.getTo();
 
         if (from == null || to == null) {
             throw new IllegalArgumentException("Both 'from' and 'to' accounts must be provided.");

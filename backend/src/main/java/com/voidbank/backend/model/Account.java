@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @ToString
 public class Account {
 
-    private Long accountId;
     private Long nuAccount;
     private Long digit;
     private Long agency;

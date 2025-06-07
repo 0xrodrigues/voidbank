@@ -14,8 +14,8 @@ public class Transaction {
 
     private Long nuTransaction;
     private String token;
-    private String from;
-    private String to;
+    private Long from;
+    private Long to;
     private BigDecimal amount;
     private BigDecimal rate;
     private String comments;

@@ -28,9 +28,9 @@ public class TransactionProcessEventListener {
         try {
             TransactionEvent transactionEvent = ObjectMapperUtil.getMapper().readValue(event, TransactionEvent.class);
             accountRepository.updateBalances(transactionEvent);
-            transactionRepository.updateStatus(transactionEvent.getToken(), TransactionStatus.PROCESSED);
+            transactionRepository.updateStatus(transactionEvent.getCorrelationId(), TransactionStatus.PROCESSED);
 
-            log.info("Balances updated successfully for transaction - {}", transactionEvent.getToken());
+            log.info("Balances updated successfully for transaction - {}", transactionEvent.getCorrelationId());
         } catch (JsonProcessingException ex) {
             log.error("Error converting JSON event {}", event, ex);
         }

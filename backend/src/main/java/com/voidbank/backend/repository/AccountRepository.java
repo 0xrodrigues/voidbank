@@ -46,13 +46,13 @@ public class AccountRepository {
                 WHERE nu_account = :to
             """;
 
-    public boolean accountExists(String nuAccount) {
+    public boolean accountExists(Long nuAccount) {
         MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
         Integer count = jdbcTemplate.queryForObject(QUERY_EXISTS, params, Integer.class);
         return count != null && count > 0;
     }
 
-    public BigDecimal getBalance(String nuAccount) {
+    public BigDecimal getBalance(Long nuAccount) {
         MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
         return jdbcTemplate.queryForObject(QUERY_BALANCE, params, BigDecimal.class);
     }
@@ -77,7 +77,6 @@ public class AccountRepository {
     private RowMapper<Account> accountRowMapper() {
         return (rs, rowNum) -> {
             Account account = new Account();
-            account.setAccountId(rs.getLong("account_id"));
             account.setNuAccount(rs.getLong("nu_account"));
             account.setDigit(rs.getLong("digit"));
             account.setAgency(rs.getLong("agency"));

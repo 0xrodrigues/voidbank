@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @ToString
 public class TransactionFailedValidationEvent {
 
-    private String from;
-    private String to;
+    private Long from;
+    private Long to;
     private String reason;
     private LocalDateTime moment;
 
-    public TransactionFailedValidationEvent(String from, String to, String reason) {
+    public TransactionFailedValidationEvent(Long from, Long to, String reason) {
         this.from = from;
         this.to = to;
         this.reason = reason;

@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @ToString
 public class CreateTransactionRequest {
-    private String from;
-    private String to;
+    private Long from;
+    private Long to;
     private BigDecimal amount;
     private String comments;
 }

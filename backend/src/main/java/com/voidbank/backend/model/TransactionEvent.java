@@ -12,16 +12,16 @@ import java.time.LocalDateTime;
 @ToString
 public class TransactionEvent {
 
-    private String token;
-    private String from;
-    private String to;
+    private String correlationId;
+    private Long from;
+    private Long to;
     private BigDecimal amount;
     private BigDecimal rate;
     private TransactionStatus status;
     private LocalDateTime createdAt;
 
     public TransactionEvent(Transaction transaction) {
-        this.token = transaction.getToken();
+        this.correlationId = transaction.getToken();
         this.from = transaction.getFrom();
         this.to = transaction.getTo();
         this.amount = transaction.getAmount();
