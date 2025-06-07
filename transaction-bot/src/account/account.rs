@@ -4,7 +4,7 @@ use sqlx::{Connection, mysql};
 
 #[derive(sqlx::FromRow)]
 pub struct Account {
-    pub nu_account: String,
+    pub nu_account: i32,
     pub balance: BigDecimal,
 }
 

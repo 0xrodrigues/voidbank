@@ -84,8 +84,8 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
 }
 
 fn create_request(
-    from_account: String,
-    to_account: String,
+    from_account: i32,
+    to_account: i32,
     amount: Decimal,
 ) -> CreateTransactionRequest {
     CreateTransactionRequest {

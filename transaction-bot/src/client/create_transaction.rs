@@ -12,9 +12,9 @@ pub async fn create_transaction(request: CreateTransactionRequest) {
 
     let client = reqwest::Client::new();
 
-    let mut map = HashMap::new();
-    map.insert("from", request.from.clone());
-    map.insert("to", request.to.clone());
+    let mut map: HashMap<&'static str, String> = HashMap::new();
+    map.insert("from", request.from.to_string());
+    map.insert("to", request.to.to_string());
     map.insert("amount", request.amount.to_string());
     map.insert("comments", request.comments.clone());
 
