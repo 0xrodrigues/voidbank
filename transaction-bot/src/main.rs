@@ -56,18 +56,12 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
     let mut rng = rand::thread_rng();
 
     while start.elapsed().as_millis() < duration_ms as u128 {
-        let from_index = rng.gen_range(0..accounts.len());
-        let mut to_index = rng.gen_range(0..accounts.len());
-
-        while to_index == from_index {
-            to_index = rng.gen_range(0..accounts.len());
-        }
-
-        let from_account = &accounts[from_index];
-        let to_account = &accounts[to_index];
+        let index = rand::seq::index::sample(&mut rng, accounts.len(), 2);
+        let from_account = &accounts[index.index(0)];
+        let to_account = &accounts[index.index(1)];
 
         let invalid = rng.gen_bool(0.2);
-        let amount = generate_random_values(from_account.balance.clone(), &mut rng, invalid);
+        let amount = generate_random_values(&from_account.balance, &mut rng, invalid);
 
         let req = create_request(
             from_account.nu_account.clone(),
@@ -82,8 +76,8 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
 
         create_transaction(req).await;
 
-        // Pequeno intervalo para não bater a API a cada milissegundo
-        sleep(Duration::from_millis(250)).await;
+        let delay = rng.gen_range(100..=300);
+        sleep(Duration::from_millis(delay)).await;
     }
 
     info!("✅ Bot finalizado após {} ms", duration_ms);
@@ -102,7 +96,7 @@ fn create_request(
     }
 }
 
-fn generate_random_values(balance: BigDecimal, rng: &mut ThreadRng, invalid: bool) -> Decimal {
+fn generate_random_values(balance: &BigDecimal, rng: &mut ThreadRng, invalid: bool) -> Decimal {
     let balance_f64 = balance.to_f64().unwrap_or(0.0);
 
     if invalid || balance_f64 < 0.01 {
