@@ -24,6 +24,7 @@ public class TransactionValidator {
     private static final String TRANSACTION_FAILED_VALIDATION_TOPIC = "voidbank.transaction.failed.validation.event";
 
     public void validate(Transaction transaction) {
+        log.info("Starting account validation - from {} - to {}", transaction.getFrom(), transaction.getTo());
         try {
             validateAmount(transaction);
             validateAccounts(transaction);
