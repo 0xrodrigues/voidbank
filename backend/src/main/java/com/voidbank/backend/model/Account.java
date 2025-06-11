@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 public class Account {
 
     private Long nuAccount;
-    private Long digit;
-    private Long agency;
+    private Integer digit;
+    private Integer agency;
     private String ownerName;
     private String document;
     private BigDecimal balance;
