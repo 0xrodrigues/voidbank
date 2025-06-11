@@ -46,6 +46,10 @@ public class AccountRepository {
                 WHERE nu_account = :to
             """;
 
+    private static final String EXISTS_BY_DOCUMENT = """
+                select count(*) from accounts where document = :document
+            """;
+
     public boolean accountExists(Long nuAccount) {
         MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
         Integer count = jdbcTemplate.queryForObject(QUERY_EXISTS, params, Integer.class);
@@ -72,6 +76,13 @@ public class AccountRepository {
 
         jdbcTemplate.update(UPDATE_DEBIT_BALANCE, params);
         jdbcTemplate.update(UPDATE_CREDIT_BALANCE, params);
+    }
+
+    public boolean existsByDocument(String document) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("document", document);
+        Integer count = jdbcTemplate.queryForObject(EXISTS_BY_DOCUMENT, params, Integer.class);
+        return count != null && count > 0;
     }
 
     private RowMapper<Account> accountRowMapper() {
