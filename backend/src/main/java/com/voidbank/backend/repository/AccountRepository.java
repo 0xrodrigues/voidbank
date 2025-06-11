@@ -66,8 +66,8 @@ public class AccountRepository {
 
     public void updateBalances(TransactionEvent event) {
         Map<String, Object> params = new HashMap<>();
-        params.put("from", Long.valueOf(event.getFrom()));
-        params.put("to", Long.valueOf(event.getTo()));
+        params.put("from", event.getFrom());
+        params.put("to", event.getTo());
         params.put("amount", event.getAmount());
 
         jdbcTemplate.update(UPDATE_DEBIT_BALANCE, params);
@@ -78,8 +78,8 @@ public class AccountRepository {
         return (rs, rowNum) -> {
             Account account = new Account();
             account.setNuAccount(rs.getLong("nu_account"));
-            account.setDigit(rs.getLong("digit"));
-            account.setAgency(rs.getLong("agency"));
+            account.setDigit(rs.getInt("digit"));
+            account.setAgency(rs.getInt("agency"));
             account.setOwnerName(rs.getString("owner_name"));
             account.setDocument(rs.getString("document"));
             account.setBalance(rs.getBigDecimal("balance"));
