@@ -4,6 +4,7 @@ import com.voidbank.backend.model.Account;
 import com.voidbank.backend.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,14 +19,19 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public void createAccount(Account account) {
+        log.info("Starting account creation process - account {}", account);
 
         if (accountRepository.existsByDocument(account.getDocument())) {
             log.error("Existing account with this document");
             throw new RuntimeException("Unable to create account, document already registered");
         }
         fill(account);
-        // TODO: Criar conta no banco de dados via repository
-
+        try {
+            accountRepository.createAccount(account);
+        } catch (Exception ex) {
+            log.error("Error in account creation process - account {}", account, ex);
+            throw ex;
+        }
     }
 
     public boolean accountExists(Long nuAccount) {
@@ -52,7 +58,7 @@ public class AccountService {
 
     private void fill(Account account) {
         Random random = new Random();
-        account.setDigit(random.nextInt(999) + 1);
+        account.setDigit(random.nextInt(9) + 1);
         account.setAgency(100);
         account.setBalance(new BigDecimal(0));
         account.setCreatedAt(LocalDateTime.now());

@@ -4,6 +4,8 @@ import com.voidbank.backend.model.Account;
 import com.voidbank.backend.model.DocumentType;
 import com.voidbank.backend.model.TransactionEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class AccountRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -49,6 +52,29 @@ public class AccountRepository {
     private static final String EXISTS_BY_DOCUMENT = """
                 select count(*) from accounts where document = :document
             """;
+
+    private static final String SAVE_ACCOUNT = """
+                INSERT INTO accounts
+                (digit, agency, owner_name, document, balance, document_type, created_at, updated_at)
+                VALUES(:digit, :agency, :owner_name, :document, :balance, :document_type, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            """;
+
+    public void createAccount(Account account) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("digit", account.getDigit());
+        params.addValue("agency", account.getAgency());
+        params.addValue("owner_name", account.getOwnerName());
+        params.addValue("document", account.getDocument());
+        params.addValue("balance", account.getBalance());
+        params.addValue("document_type", account.getDocumentType().name());
+
+        try {
+            jdbcTemplate.update(SAVE_ACCOUNT, params);
+        } catch (DataAccessException ex) {
+            log.error("Error saving account to database - account {}", account, ex);
+            throw ex;
+        }
+    }
 
     public boolean accountExists(Long nuAccount) {
         MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
