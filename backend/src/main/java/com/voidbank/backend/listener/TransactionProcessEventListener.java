@@ -1,6 +1,7 @@
 package com.voidbank.backend.listener;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.voidbank.backend.EventTopicEnum;
 import com.voidbank.backend.model.TransactionEvent;
 import com.voidbank.backend.model.TransactionStatus;
 import com.voidbank.backend.repository.AccountRepository;
@@ -16,12 +17,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TransactionProcessEventListener {
 
-    private static final String TRANSACTION_PROCESS_TOPIC = "voidbank.transaction.process.event";
+    private static final String TRANSACTION_PROCESS_TOPIC = EventTopicEnum.TRANSACTION_PROCESS.getTopic();
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
-    @KafkaListener(topics = TRANSACTION_PROCESS_TOPIC)
+    @KafkaListener(topics = "${transaction.process.topic}")
     public void transactionListener(String event) {
         log.info("Event received from topic: {} - event: {}", TRANSACTION_PROCESS_TOPIC, event);
 
