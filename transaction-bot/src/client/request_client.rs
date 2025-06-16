@@ -40,7 +40,7 @@ impl RequestClient {
             }
             Err(err) => {
                 warn!("❌ Erro ao enviar requisição: {:?}", err);
-                let payload = get_payload(request, err);
+                let payload = get_payload_error(request, err);
                 if let Err(e) = send_to_kafka(KAFKA_TOPIC, &payload).await {
                     warn!("❌ Falha ao enviar evento para o Kafka: {:?}", e);
                 } else {
@@ -51,7 +51,7 @@ impl RequestClient {
     }
 }
 
-fn get_payload(request: CreateTransactionRequest, err: Error) -> String {
+fn get_payload_error(request: CreateTransactionRequest, err: Error) -> String {
     json!({
         "error": format!("{:?}", err),
         "request": &request
