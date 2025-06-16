@@ -1,6 +1,7 @@
 package com.voidbank.backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.voidbank.backend.EventTopicEnum;
 import com.voidbank.backend.publisher.KafkaPublisher;
 import com.voidbank.backend.model.Transaction;
 import com.voidbank.backend.model.TransactionEvent;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @Slf4j
 public class TransactionService {
 
-    private static final String TRANSACTION_PROCESS_TOPIC = "voidbank.transaction.process.event";
+    private static final String TRANSACTION_PROCESS_TOPIC = EventTopicEnum.TRANSACTION_PROCESS.getTopic();
 
     private final TransactionRepository transactionRepository;
     private final TransactionValidator transactionValidator;
