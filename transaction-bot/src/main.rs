@@ -3,7 +3,7 @@ mod client;
 mod request;
 
 use crate::account::account::{Account, get_accounts};
-use crate::client::create_transaction::create_transaction;
+use crate::client::request_client::RequestClient;
 use crate::request::create_transaction_request::CreateTransactionRequest;
 use bigdecimal::BigDecimal;
 use log::LevelFilter;
@@ -16,6 +16,8 @@ use simple_logger::SimpleLogger;
 use std::env;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
+
+const ENDPOINT: &str = "http://localhost:8080/api/transaction";
 
 #[tokio::main]
 async fn main() {
@@ -74,7 +76,11 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
             req.amount, req.from, req.to, invalid
         );
 
-        create_transaction(req).await;
+        // Send a request to API voidbank using struct and impl
+        // Create e new Transaction to VOIDBANK API
+        RequestClient::new(String::from(ENDPOINT))
+            .send_create_transaction_request(req)
+            .await;
 
         let delay = rng.gen_range(100..=300);
         sleep(Duration::from_millis(delay)).await;
@@ -83,11 +89,7 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
     info!("✅ Bot finalizado após {} ms", duration_ms);
 }
 
-fn create_request(
-    from_account: i32,
-    to_account: i32,
-    amount: Decimal,
-) -> CreateTransactionRequest {
+fn create_request(from_account: i32, to_account: i32, amount: Decimal) -> CreateTransactionRequest {
     CreateTransactionRequest {
         from: from_account,
         to: to_account,
