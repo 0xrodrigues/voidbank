@@ -27,7 +27,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<MessageResponseApi> transferFunds(@RequestBody CreateTransactionRequest request) {
         transactionService.transferFunds(map(request, Transaction.class));
-        return ResponseEntity.ok(new MessageResponseApi("Transação realizada com sucesso", LocalDateTime.now()));
+        return ResponseEntity.ok(new MessageResponseApi("Transaction completed successfully", LocalDateTime.now()));
     }
 
 }
