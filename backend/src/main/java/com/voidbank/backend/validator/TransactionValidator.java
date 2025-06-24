@@ -2,6 +2,8 @@ package com.voidbank.backend.validator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.voidbank.backend.exceptions.AccountNotFoundException;
+import com.voidbank.backend.exceptions.InsufficientBalanceException;
 import com.voidbank.backend.publisher.KafkaPublisher;
 import com.voidbank.backend.model.Transaction;
 import com.voidbank.backend.model.TransactionFailedValidationEvent;
@@ -64,18 +66,18 @@ public class TransactionValidator {
         }
 
         if (!accountService.accountExists(from)) {
-            throw new IllegalArgumentException("Origin account does not exist: " + from);
+            throw new AccountNotFoundException("Origin account does not exist: " + from);
         }
 
         if (!accountService.accountExists(to)) {
-            throw new IllegalArgumentException("Destination account does not exist: " + to);
+            throw new AccountNotFoundException("Destination account does not exist: " + to);
         }
     }
 
     private void validateSufficientBalance(Transaction transaction) {
         BigDecimal balance = accountService.getBalance(transaction.getFrom());
         if (balance.compareTo(transaction.getAmount()) < 0) {
-            throw new IllegalArgumentException("Insufficient balance in the origin account.");
+            throw new InsufficientBalanceException("Insufficient balance in the origin account.");
         }
     }
 }
