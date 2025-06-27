@@ -1,7 +1,7 @@
 package com.voidbank.backend.repository;
 
 import com.voidbank.backend.model.Transaction;
-import com.voidbank.backend.model.TransactionStatus;
+import com.voidbank.backend.model.enums.TransactionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

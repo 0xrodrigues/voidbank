@@ -1,7 +1,7 @@
 package com.voidbank.backend.repository;
 
 import com.voidbank.backend.model.Account;
-import com.voidbank.backend.model.DocumentType;
+import com.voidbank.backend.model.enums.DocumentType;
 import com.voidbank.backend.model.TransactionEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

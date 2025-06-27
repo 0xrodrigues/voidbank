@@ -1,6 +1,6 @@
 package com.voidbank.backend.controller.request;
 
-import com.voidbank.backend.model.DocumentType;
+import com.voidbank.backend.model.enums.DocumentType;
 import lombok.*;
 
 @Getter

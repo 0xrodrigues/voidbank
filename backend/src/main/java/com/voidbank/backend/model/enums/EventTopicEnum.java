@@ -1,4 +1,4 @@
-package com.voidbank.backend;
+package com.voidbank.backend.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

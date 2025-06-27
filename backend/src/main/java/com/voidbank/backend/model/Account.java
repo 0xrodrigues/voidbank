@@ -1,5 +1,6 @@
 package com.voidbank.backend.model;
 
+import com.voidbank.backend.model.enums.DocumentType;
 import lombok.*;
 
 import java.math.BigDecimal;
