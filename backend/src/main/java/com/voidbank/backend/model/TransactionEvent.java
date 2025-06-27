@@ -1,6 +1,7 @@
 package com.voidbank.backend.model;
 
 import com.voidbank.backend.model.enums.TransactionStatus;
+import com.voidbank.backend.model.enums.TransactionType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ public class TransactionEvent {
     private BigDecimal amount;
     private BigDecimal rate;
     private TransactionStatus status;
+    private TransactionType type;
     private LocalDateTime createdAt;
 
     public TransactionEvent(Transaction transaction) {
@@ -29,6 +31,7 @@ public class TransactionEvent {
         this.rate = transaction.getRate();
         this.status = transaction.getStatus();
         this.createdAt = transaction.getCreatedAt();
+        this.type = transaction.getType();
     }
 
 }

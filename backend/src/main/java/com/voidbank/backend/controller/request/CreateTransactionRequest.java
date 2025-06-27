@@ -1,5 +1,6 @@
 package com.voidbank.backend.controller.request;
 
+import com.voidbank.backend.model.enums.TransactionType;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -14,4 +15,5 @@ public class CreateTransactionRequest {
     private Long to;
     private BigDecimal amount;
     private String comments;
+    private TransactionType type;
 }

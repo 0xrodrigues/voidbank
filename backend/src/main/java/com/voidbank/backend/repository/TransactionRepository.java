@@ -26,7 +26,8 @@ public class TransactionRepository {
                     comments,
                     status,
                     created_at,
-                    updated_at
+                    updated_at,
+                    transaction_type
                 ) VALUES (
                     :nuTransaction,
                     :token,
@@ -37,7 +38,8 @@ public class TransactionRepository {
                     :comments,
                     :status,
                     :createdAt,
-                    :updatedAt
+                    :updatedAt,
+                    :transaction_type
                 )
             """;
 
@@ -83,6 +85,7 @@ public class TransactionRepository {
         params.put("status", transaction.getStatus().name()); // Assumindo que é um enum
         params.put("createdAt", transaction.getCreatedAt());
         params.put("updatedAt", transaction.getUpdatedAt());
+        params.put("transaction_type", transaction.getType().name());
         return params;
     }
 
