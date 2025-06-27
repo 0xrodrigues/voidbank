@@ -1,5 +1,7 @@
 package com.voidbank.backend.service;
 
+import com.voidbank.backend.exceptions.builder.ExceptionBuilder;
+import com.voidbank.backend.exceptions.exceptions.indicator.AccountExceptionIndicator;
 import com.voidbank.backend.model.Account;
 import com.voidbank.backend.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,9 @@ public class AccountService {
             accountRepository.createAccount(account);
         } catch (Exception ex) {
             log.error("Error in account creation process - account {}", account, ex);
-            throw ex;
+            throw ExceptionBuilder
+                    .withIndicator(AccountExceptionIndicator.ACCOUNT_NOT_FOUND)
+                    .build();
         }
     }
 

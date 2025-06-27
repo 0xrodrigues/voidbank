@@ -2,8 +2,7 @@ package com.voidbank.backend.validator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.voidbank.backend.exceptions.AccountNotFoundException;
-import com.voidbank.backend.exceptions.InsufficientBalanceException;
+import com.voidbank.backend.exceptions.exceptions.indicator.AccountExceptionIndicator;
 import com.voidbank.backend.publisher.KafkaPublisher;
 import com.voidbank.backend.model.Transaction;
 import com.voidbank.backend.model.TransactionFailedValidationEvent;
@@ -13,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+
+import static com.voidbank.backend.exceptions.helper.ThrowerHelper.throwException;
 
 @Component
 @RequiredArgsConstructor
@@ -66,18 +67,18 @@ public class TransactionValidator {
         }
 
         if (!accountService.accountExists(from)) {
-            throw new AccountNotFoundException("Origin account does not exist: " + from);
+            throwException(AccountExceptionIndicator.ACCOUNT_NOT_FOUND);
         }
 
         if (!accountService.accountExists(to)) {
-            throw new AccountNotFoundException("Destination account does not exist: " + to);
+            throwException(AccountExceptionIndicator.ACCOUNT_NOT_FOUND);
         }
     }
 
     private void validateSufficientBalance(Transaction transaction) {
         BigDecimal balance = accountService.getBalance(transaction.getFrom());
         if (balance.compareTo(transaction.getAmount()) < 0) {
-            throw new InsufficientBalanceException("Insufficient balance in the origin account.");
+            throwException(AccountExceptionIndicator.ACCOUNT_INSUFFICIENT_BALANCE);
         }
     }
 }
