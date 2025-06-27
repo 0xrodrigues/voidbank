@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,4 +24,11 @@ public class Transaction {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public void fill() {
+        this.token = UUID.randomUUID().toString();
+        this.rate = new BigDecimal("1.5");
+        this.status = TransactionStatus.PENDING;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 }
