@@ -33,7 +33,7 @@ public class TransactionValidator {
             validateAccounts(transaction);
             validateSufficientBalance(transaction);
         } catch (Exception ex) {
-            log.error("Transaction failed validation - {}", transaction);
+            log.error("Transaction validation failed - {}", transaction);
 
             try {
                 String exMessage = ex.getMessage();
@@ -43,8 +43,6 @@ public class TransactionValidator {
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error("Error when producer event to {} topic", TRANSACTION_FAILED_VALIDATION_TOPIC, ex);
             }
-
-            throw ex;
         }
     }
 
