@@ -21,52 +21,74 @@ import java.util.Optional;
 @Slf4j
 public class AccountRepository {
 
+    // Table name
+    private static final String TABLE_ACCOUNTS = "accounts";
+    
+    // Column names
+    private static final String COL_NU_ACCOUNT = "nu_account";
+    private static final String COL_DIGIT = "digit";
+    private static final String COL_AGENCY = "agency";
+    private static final String COL_OWNER_NAME = "owner_name";
+    private static final String COL_DOCUMENT = "document";
+    private static final String COL_BALANCE = "balance";
+    private static final String COL_DOCUMENT_TYPE = "document_type";
+    private static final String COL_CREATED_AT = "created_at";
+    private static final String COL_UPDATED_AT = "updated_at";
+    
+    // Parameter names
+    private static final String PARAM_FROM = "from";
+    private static final String PARAM_TO = "to";
+    private static final String PARAM_AMOUNT = "amount";
+    
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private static final String QUERY_EXISTS = """
-                SELECT COUNT(*) FROM accounts WHERE nu_account = :nu_account
-            """;
+    private static final String QUERY_EXISTS = String.format("""
+                SELECT COUNT(*) FROM %s WHERE %s = :%s
+            """, TABLE_ACCOUNTS, COL_NU_ACCOUNT, COL_NU_ACCOUNT);
 
-    private static final String QUERY_BALANCE = """
-                SELECT balance FROM accounts WHERE nu_account = :nu_account
-            """;
+    private static final String QUERY_BALANCE = String.format("""
+                SELECT %s FROM %s WHERE %s = :%s
+            """, COL_BALANCE, TABLE_ACCOUNTS, COL_NU_ACCOUNT, COL_NU_ACCOUNT);
 
-    private static final String QUERY_ACCOUNT = """
-                SELECT * FROM accounts WHERE nu_account = :nu_account
-            """;
+    private static final String QUERY_ACCOUNT = String.format("""
+                SELECT * FROM %s WHERE %s = :%s
+            """, TABLE_ACCOUNTS, COL_NU_ACCOUNT, COL_NU_ACCOUNT);
 
-    private static final String UPDATE_DEBIT_BALANCE = """
-                UPDATE accounts
-                SET balance = balance - :amount,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE nu_account = :from
-            """;
+    private static final String UPDATE_DEBIT_BALANCE = String.format("""
+                UPDATE %s
+                SET %s = %s - :%s,
+                    %s = CURRENT_TIMESTAMP
+                WHERE %s = :%s
+            """, TABLE_ACCOUNTS, COL_BALANCE, COL_BALANCE, PARAM_AMOUNT, COL_UPDATED_AT, COL_NU_ACCOUNT, PARAM_FROM);
 
-    private static final String UPDATE_CREDIT_BALANCE = """
-                UPDATE accounts
-                SET balance = balance + :amount,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE nu_account = :to
-            """;
+    private static final String UPDATE_CREDIT_BALANCE = String.format("""
+                UPDATE %s
+                SET %s = %s + :%s,
+                    %s = CURRENT_TIMESTAMP
+                WHERE %s = :%s
+            """, TABLE_ACCOUNTS, COL_BALANCE, COL_BALANCE, PARAM_AMOUNT, COL_UPDATED_AT, COL_NU_ACCOUNT, PARAM_TO);
 
-    private static final String EXISTS_BY_DOCUMENT = """
-                select count(*) from accounts where document = :document
-            """;
+    private static final String EXISTS_BY_DOCUMENT = String.format("""
+                SELECT COUNT(*) FROM %s WHERE %s = :%s
+            """, TABLE_ACCOUNTS, COL_DOCUMENT, COL_DOCUMENT);
 
-    private static final String SAVE_ACCOUNT = """
-                INSERT INTO accounts
-                (digit, agency, owner_name, document, balance, document_type, created_at, updated_at)
-                VALUES(:digit, :agency, :owner_name, :document, :balance, :document_type, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-            """;
+    private static final String SAVE_ACCOUNT = String.format("""
+                INSERT INTO %s
+                (%s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (:%s, :%s, :%s, :%s, :%s, :%s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            """, 
+            TABLE_ACCOUNTS,
+            COL_DIGIT, COL_AGENCY, COL_OWNER_NAME, COL_DOCUMENT, COL_BALANCE, COL_DOCUMENT_TYPE, COL_CREATED_AT, COL_UPDATED_AT,
+            COL_DIGIT, COL_AGENCY, COL_OWNER_NAME, COL_DOCUMENT, COL_BALANCE, COL_DOCUMENT_TYPE);
 
     public void createAccount(Account account) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("digit", account.getDigit());
-        params.addValue("agency", account.getAgency());
-        params.addValue("owner_name", account.getOwnerName());
-        params.addValue("document", account.getDocument());
-        params.addValue("balance", account.getBalance());
-        params.addValue("document_type", account.getDocumentType().name());
+        params.addValue(COL_DIGIT, account.getDigit());
+        params.addValue(COL_AGENCY, account.getAgency());
+        params.addValue(COL_OWNER_NAME, account.getOwnerName());
+        params.addValue(COL_DOCUMENT, account.getDocument());
+        params.addValue(COL_BALANCE, account.getBalance());
+        params.addValue(COL_DOCUMENT_TYPE, account.getDocumentType().name());
 
         try {
             jdbcTemplate.update(SAVE_ACCOUNT, params);
@@ -77,18 +99,18 @@ public class AccountRepository {
     }
 
     public boolean accountExists(Long nuAccount) {
-        MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
+        MapSqlParameterSource params = new MapSqlParameterSource(COL_NU_ACCOUNT, nuAccount);
         Integer count = jdbcTemplate.queryForObject(QUERY_EXISTS, params, Integer.class);
         return count != null && count > 0;
     }
 
     public BigDecimal getBalance(Long nuAccount) {
-        MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
+        MapSqlParameterSource params = new MapSqlParameterSource(COL_NU_ACCOUNT, nuAccount);
         return jdbcTemplate.queryForObject(QUERY_BALANCE, params, BigDecimal.class);
     }
 
     public Optional<Account> findById(Long nuAccount) {
-        MapSqlParameterSource params = new MapSqlParameterSource("nu_account", nuAccount);
+        MapSqlParameterSource params = new MapSqlParameterSource(COL_NU_ACCOUNT, nuAccount);
         return jdbcTemplate.query(QUERY_ACCOUNT, params, accountRowMapper())
                 .stream()
                 .findFirst();
@@ -96,9 +118,9 @@ public class AccountRepository {
 
     public void updateBalances(TransactionEvent event) {
         Map<String, Object> params = new HashMap<>();
-        params.put("from", event.getFrom());
-        params.put("to", event.getTo());
-        params.put("amount", event.getAmount());
+        params.put(PARAM_FROM, event.getFrom());
+        params.put(PARAM_TO, event.getTo());
+        params.put(PARAM_AMOUNT, event.getAmount());
 
         jdbcTemplate.update(UPDATE_DEBIT_BALANCE, params);
         jdbcTemplate.update(UPDATE_CREDIT_BALANCE, params);
@@ -106,7 +128,7 @@ public class AccountRepository {
 
     public boolean existsByDocument(String document) {
         Map<String, Object> params = new HashMap<>();
-        params.put("document", document);
+        params.put(COL_DOCUMENT, document);
         Integer count = jdbcTemplate.queryForObject(EXISTS_BY_DOCUMENT, params, Integer.class);
         return count != null && count > 0;
     }
@@ -114,15 +136,15 @@ public class AccountRepository {
     private RowMapper<Account> accountRowMapper() {
         return (rs, rowNum) -> {
             Account account = new Account();
-            account.setNuAccount(rs.getLong("nu_account"));
-            account.setDigit(rs.getInt("digit"));
-            account.setAgency(rs.getInt("agency"));
-            account.setOwnerName(rs.getString("owner_name"));
-            account.setDocument(rs.getString("document"));
-            account.setBalance(rs.getBigDecimal("balance"));
-            account.setDocumentType(DocumentType.valueOf(rs.getString("document_type")));
-            account.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-            account.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+            account.setNuAccount(rs.getLong(COL_NU_ACCOUNT));
+            account.setDigit(rs.getInt(COL_DIGIT));
+            account.setAgency(rs.getInt(COL_AGENCY));
+            account.setOwnerName(rs.getString(COL_OWNER_NAME));
+            account.setDocument(rs.getString(COL_DOCUMENT));
+            account.setBalance(rs.getBigDecimal(COL_BALANCE));
+            account.setDocumentType(DocumentType.valueOf(rs.getString(COL_DOCUMENT_TYPE)));
+            account.setCreatedAt(rs.getTimestamp(COL_CREATED_AT).toLocalDateTime());
+            account.setUpdatedAt(rs.getTimestamp(COL_UPDATED_AT).toLocalDateTime());
             return account;
         };
     }
