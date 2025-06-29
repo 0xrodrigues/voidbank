@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-import static com.voidbank.backend.exceptions.helper.ThrowerHelper.throwException;
+import static com.voidbank.backend.exceptions.builder.ExceptionBuilder.withIndicator;
 
 @Component
 @RequiredArgsConstructor
@@ -65,18 +65,17 @@ public class TransactionValidator {
         }
 
         if (!accountService.accountExists(from)) {
-            throwException(AccountExceptionIndicator.ACCOUNT_NOT_FOUND);
+            throw withIndicator(AccountExceptionIndicator.ACCOUNT_NOT_FOUND).build();
         }
-
         if (!accountService.accountExists(to)) {
-            throwException(AccountExceptionIndicator.ACCOUNT_NOT_FOUND);
+            throw withIndicator(AccountExceptionIndicator.ACCOUNT_NOT_FOUND).build();
         }
     }
 
     private void validateSufficientBalance(Transaction transaction) {
         BigDecimal balance = accountService.getBalance(transaction.getFrom());
         if (balance.compareTo(transaction.getAmount()) < 0) {
-            throwException(AccountExceptionIndicator.ACCOUNT_INSUFFICIENT_BALANCE);
+            throw withIndicator(AccountExceptionIndicator.ACCOUNT_INSUFFICIENT_BALANCE).build();
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.voidbank.backend.service;
 
-import com.voidbank.backend.exceptions.builder.ExceptionBuilder;
 import com.voidbank.backend.exceptions.exceptions.indicator.AccountExceptionIndicator;
 import com.voidbank.backend.model.Account;
 import com.voidbank.backend.repository.AccountRepository;
@@ -12,28 +11,29 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import static com.voidbank.backend.exceptions.builder.ExceptionBuilder.withIndicator;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private final Random random = new Random();
 
     public void createAccount(Account account) {
         log.info("Starting account creation process - account {}", account);
 
         if (accountRepository.existsByDocument(account.getDocument())) {
             log.error("Existing account with this document");
-            throw new RuntimeException("Unable to create account, document already registered");
+            throw withIndicator(AccountExceptionIndicator.ACCOUNT_WITH_DOCUMENT_ALREADY_EXISTS).build();
         }
         fill(account);
         try {
             accountRepository.createAccount(account);
         } catch (Exception ex) {
             log.error("Error in account creation process - account {}", account, ex);
-            throw ExceptionBuilder
-                    .withIndicator(AccountExceptionIndicator.ACCOUNT_NOT_FOUND)
-                    .build();
+            throw withIndicator(AccountExceptionIndicator.ACCOUNT_NOT_FOUND).build();
         }
     }
 
@@ -55,13 +55,12 @@ public class AccountService {
             return balance;
         } catch (Exception e) {
             log.error("Error retrieving balance for account: {}", nuAccount, e);
-            throw new RuntimeException("Unable to retrieve account balance", e);
+            throw withIndicator(AccountExceptionIndicator.RETRIEVING_BALANCE).build();
         }
     }
 
     private void fill(Account account) {
-        Random random = new Random();
-        account.setDigit(random.nextInt(9) + 1);
+        account.setDigit(this.random.nextInt(9) + 1);
         account.setAgency(100);
         account.setBalance(new BigDecimal(0));
         account.setCreatedAt(LocalDateTime.now());
