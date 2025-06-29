@@ -16,12 +16,13 @@ CREATE TABLE accounts (
 CREATE TABLE transactions (
     nu_transaction BIGINT AUTO_INCREMENT PRIMARY KEY,
     token VARCHAR(255) NOT NULL,
-    from_nu_account VARCHAR(20) NOT NULL,
-    to_nu_account VARCHAR(20) NOT NULL,
+    from_nu_account BIGINT NOT NULL,
+    to_nu_account BIGINT NOT NULL,
     amount DECIMAL(19, 4) NOT NULL,
     rate DECIMAL(19, 4),
     comments TEXT,
-    status ENUM('PENDING', 'COMPLETED', 'FAILED') NOT NULL,
+    status VARCHAR(25) NOT NULL,
+    transaction_type VARCHAR(50) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
