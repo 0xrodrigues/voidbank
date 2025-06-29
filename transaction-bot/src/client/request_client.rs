@@ -25,7 +25,7 @@ impl RequestClient {
         map.insert("from", request.from.to_string());
         map.insert("to", request.to.to_string());
         map.insert("amount", request.amount.to_string());
-        map.insert("transactionType", request.transaction_type.clone());
+        map.insert("type", request.transaction_type.clone());
         map.insert("comments", request.comments.clone());
 
         let call_result = client.post(self.url).json(&map).send().await;
