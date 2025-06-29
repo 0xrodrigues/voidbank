@@ -4,6 +4,7 @@ use rust_decimal::prelude::*;
 pub struct CreateTransactionRequest {
     pub from: i32,
     pub to: i32,
+    pub transaction_type: String,
     pub amount: Decimal,
     pub comments: String,
 }

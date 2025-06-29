@@ -93,6 +93,7 @@ fn create_request(from_account: i32, to_account: i32, amount: Decimal) -> Create
     CreateTransactionRequest {
         from: from_account,
         to: to_account,
+        transaction_type: String::from("PIX"),
         amount,
         comments: "Transaction Bot run".into(),
     }
