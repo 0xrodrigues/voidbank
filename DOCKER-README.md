@@ -58,10 +58,35 @@ docker-compose down
 Após iniciar a aplicação, os seguintes serviços estarão disponíveis:
 
 - **Backend API**: http://localhost:8080
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI Docs**: http://localhost:8080/api-docs
 - **Health Check**: http://localhost:8080/actuator/health
 - **MySQL**: localhost:3306
 - **Kafka**: localhost:9092
 - **Kafka UI** (se habilitado): http://localhost:8081
+
+## 📚 Documentação da API
+
+A aplicação VoidBank inclui documentação interativa da API usando Swagger/OpenAPI:
+
+### Swagger UI
+Acesse http://localhost:8080/swagger-ui.html para:
+- Visualizar todos os endpoints disponíveis
+- Testar as APIs diretamente no navegador
+- Ver exemplos de request/response
+- Entender a estrutura dos dados
+
+### Endpoints Principais
+
+#### Contas (`/api/account`)
+- `POST /api/account` - Criar nova conta bancária
+
+#### Transações (`/api/transaction`)
+- `POST /api/transaction` - Realizar transferência entre contas
+
+### OpenAPI Specification
+- **JSON**: http://localhost:8080/api-docs
+- **YAML**: http://localhost:8080/api-docs.yaml
 
 ## 📊 Monitoramento
 
