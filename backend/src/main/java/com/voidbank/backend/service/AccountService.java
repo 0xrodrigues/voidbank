@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.voidbank.backend.exceptions.builder.ExceptionBuilder.withIndicator;
@@ -56,6 +57,27 @@ public class AccountService {
         } catch (Exception e) {
             log.error("Error retrieving balance for account: {}", nuAccount, e);
             throw withIndicator(AccountExceptionIndicator.RETRIEVING_BALANCE).build();
+        }
+    }
+
+    public Account findAccountById(Long nuAccount) {
+        log.info("Searching for account with ID: {}", nuAccount);
+
+        try {
+            Optional<Account> accountOpt = accountRepository.findById(nuAccount);
+
+            if (accountOpt.isEmpty()) {
+                log.warn("Account not found with ID: {}", nuAccount);
+                throw withIndicator(AccountExceptionIndicator.ACCOUNT_NOT_FOUND).build();
+            }
+
+            Account account = accountOpt.get();
+            log.debug("Account found: {}", account);
+            return account;
+
+        } catch (Exception e) {
+            log.error("Error retrieving account with ID: {}", nuAccount, e);
+            throw withIndicator(AccountExceptionIndicator.ACCOUNT_NOT_FOUND).build();
         }
     }
 
