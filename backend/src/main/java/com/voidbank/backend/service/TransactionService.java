@@ -1,9 +1,9 @@
 package com.voidbank.backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.voidbank.backend.model.enums.EventTopicEnum;
 import com.voidbank.backend.model.Transaction;
 import com.voidbank.backend.model.TransactionEvent;
+import com.voidbank.backend.model.enums.EventTopicEnum;
 import com.voidbank.backend.publisher.KafkaPublisher;
 import com.voidbank.backend.repository.TransactionRepository;
 import com.voidbank.backend.validator.TransactionValidator;
