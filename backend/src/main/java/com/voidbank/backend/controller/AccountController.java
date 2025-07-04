@@ -32,9 +32,9 @@ public class AccountController implements AccountApi {
     }
 
     @Override
-    public ResponseEntity<AccountResponse> getAccountById(Long accountId) {
-        log.info("Method getAccountById - accountId: {}", accountId);
-        Account account = accountService.findAccountById(accountId);
+    public ResponseEntity<AccountResponse> getAccountById(Long nuAccount) {
+        log.info("Method getAccountById - nuAccount: {}", nuAccount);
+        Account account = accountService.findAccountById(nuAccount);
         AccountResponse response = map(account, AccountResponse.class);
         log.debug("Account found and mapped to response: {}", response);
         return ResponseEntity.ok(response);

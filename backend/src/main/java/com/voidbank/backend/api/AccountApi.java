@@ -77,13 +77,13 @@ public interface AccountApi {
                     )
             )
     })
-    @GetMapping("/{accountId}")
+    @GetMapping("/{nuAccount}")
     ResponseEntity<AccountResponse> getAccountById(
             @Parameter(
                     description = "Número da conta bancária",
                     example = "12345",
                     required = true
             )
-            @PathVariable Long accountId
+            @PathVariable Long nuAccount
     );
 }
