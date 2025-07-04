@@ -47,6 +47,27 @@ Cria uma nova conta bancária no sistema.
 }
 ```
 
+#### `GET /api/account/{accountId}`
+Busca os dados completos de uma conta bancária específica.
+
+**Path Parameters:**
+- `accountId` (Long): Número da conta bancária
+
+**Response (200 OK):**
+```json
+{
+  "nuAccount": 12345,
+  "digit": 7,
+  "agency": 100,
+  "ownerName": "João Silva Santos",
+  "document": "12345678901",
+  "balance": 1500.75,
+  "documentType": "CPF",
+  "createdAt": "2024-01-15T10:30:00",
+  "updatedAt": "2024-01-20T14:45:30"
+}
+```
+
 **Possíveis Erros:**
 - `400 Bad Request` - Dados inválidos ou conta já existe
 - `500 Internal Server Error` - Erro interno do servidor
@@ -145,6 +166,12 @@ curl -X POST http://localhost:8080/api/account \
     "document": "12345678901",
     "documentType": "CPF"
   }'
+```
+
+**Buscar conta por ID:**
+```bash
+curl -X GET http://localhost:8080/api/account/12345 \
+  -H "Content-Type: application/json"
 ```
 
 **Realizar transação:**
