@@ -14,6 +14,9 @@ use rust_decimal::Decimal;
 use rust_decimal::prelude::ToPrimitive;
 use simple_logger::SimpleLogger;
 use std::env;
+use std::fs::OpenOptions;
+use std::io::BufWriter;
+use std::io::Write;
 use std::time::{Duration, Instant};
 use tokio::time::sleep;
 
@@ -54,6 +57,8 @@ async fn main() {
 }
 
 async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
+    let mut logs: Vec<String> = Vec::new();
+
     let start = Instant::now();
     let mut rng = rand::thread_rng();
 
@@ -71,10 +76,11 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
             amount,
         );
 
-        info!(
+        let log_line = format!(
             "Enviando R$ {} de {} para {} (forçando erro: {})",
             req.amount, req.from, req.to, invalid
         );
+        info!("{}", log_line);
 
         // Send a request to API voidbank using struct and impl
         // Create e new Transaction to VOIDBANK API
@@ -84,8 +90,9 @@ async fn run_transactions(accounts: Vec<Account>, duration_ms: u64) {
 
         let delay = rng.gen_range(100..=300);
         sleep(Duration::from_millis(delay)).await;
+        logs.push(log_line);
     }
-
+    write_log(logs);
     info!("✅ Bot finalizado após {} ms", duration_ms);
 }
 
@@ -108,5 +115,30 @@ fn generate_random_values(balance: &BigDecimal, rng: &mut ThreadRng, invalid: bo
         let cents = (balance_f64 * 100.0).floor() as i64;
         let random_cents = rng.gen_range(1..=cents.max(1));
         Decimal::new(random_cents, 2)
+    }
+}
+
+fn write_log(logs: Vec<String>) {
+    info!("Escrevendo {} logs em transactions_log.txt", logs.len());
+    let file_result = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("transactions_log.txt");
+
+    match file_result {
+        Ok(file) => {
+            let mut writer = BufWriter::new(file);
+            for line in logs {
+                if let Err(e) = writeln!(writer, "{}", line) {
+                    warn!("❌ Falha ao escrever no arquivo de log: {:?}", e);
+                }
+            }
+            if let Err(e) = writer.flush() {
+                warn!("❌ Falha ao flush do buffer de log: {:?}", e);
+            }
+        }
+        Err(e) => {
+            warn!("❌ Falha ao abrir/criar o arquivo de log: {:?}", e);
+        }
     }
 }
