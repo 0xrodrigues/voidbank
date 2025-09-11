@@ -36,6 +36,7 @@ public class TransactionValidator {
             log.error("Transaction validation failed - {}", transaction);
 
             try {
+                log.info("Producer transaction validation failed event to kafka - {}", transaction);
                 String exMessage = ex.getMessage();
                 String eventAsString = objectMapper.writeValueAsString(
                         new TransactionFailedValidationEvent(transaction.getFrom(), transaction.getTo(), exMessage));
