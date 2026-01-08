@@ -12,13 +12,13 @@ import lombok.*;
 @Schema(description = "Dados necessários para criação de uma nova conta bancária")
 public class CreateAccountRequest {
 
-    @Schema(description = "Nome completo do titular da conta", example = "João Silva Santos", required = true)
+    @Schema(description = "Nome completo do titular da conta", example = "João Silva Santos")
     private String ownerName;
 
-    @Schema(description = "Número do documento (CPF ou CNPJ)", example = "12345678901", required = true)
+    @Schema(description = "Número do documento (CPF ou CNPJ)", example = "12345678901")
     private String document;
 
-    @Schema(description = "Tipo do documento", example = "CPF", required = true, allowableValues = {"CPF", "CNPJ"})
+    @Schema(description = "Tipo do documento", example = "CPF", allowableValues = {"CPF", "CNPJ"})
     private DocumentType documentType;
 
 }

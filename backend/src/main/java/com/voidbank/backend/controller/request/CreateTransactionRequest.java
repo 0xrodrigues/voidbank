@@ -14,18 +14,18 @@ import java.math.BigDecimal;
 @Schema(description = "Dados necessários para realizar uma transação entre contas")
 public class CreateTransactionRequest {
 
-    @Schema(description = "Número da conta de origem", example = "12345", required = true)
+    @Schema(description = "Número da conta de origem", example = "12345")
     private Long from;
 
-    @Schema(description = "Número da conta de destino", example = "67890", required = true)
+    @Schema(description = "Número da conta de destino", example = "67890")
     private Long to;
 
-    @Schema(description = "Valor da transação", example = "100.50", required = true)
+    @Schema(description = "Valor da transação", example = "100.50")
     private BigDecimal amount;
 
     @Schema(description = "Comentários ou observações sobre a transação", example = "Pagamento de serviços")
     private String comments;
 
-    @Schema(description = "Tipo da transação", example = "PIX", required = true)
+    @Schema(description = "Tipo da transação", example = "PIX")
     private TransactionType type;
 }
